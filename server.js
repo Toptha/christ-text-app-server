@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const professorRoutes = require('./routes/professor');
+
 dotenv.config();
 
 const app = express();
@@ -13,6 +15,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes); 
 app.use('/api/user', userRoutes); 
+app.use('/api/professors', professorRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

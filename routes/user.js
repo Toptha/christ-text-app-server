@@ -17,9 +17,11 @@ router.post('/update', async (req, res) => {
     );
 
     if (!updatedUser) {
+      console.log('User not found for update:', email);
       return res.status(404).json({ message: 'User not found' });
     }
 
+    console.log('Updated user:', updatedUser);
     res.status(200).json({ message: 'User info updated', user: updatedUser });
   } catch (err) {
     console.error('Update error:', err);
