@@ -7,7 +7,9 @@ const { Server } = require('socket.io');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const professorRoutes = require('./routes/professor');
+const professorRoutes = require('./routes/search');
+const messageRoutes = require('./routes/message');
+const searchRoutes = require('./routes/search');
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes); 
 app.use('/api/user', userRoutes); 
 app.use('/api/professors', professorRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/search', searchRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -32,7 +36,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', //IMP change to your client URL
+    origin: 'https://christuniverse.vercel.app', 
     methods: ['GET', 'POST']
   }
 });
@@ -47,7 +51,7 @@ io.on('connection', (socket) => {
 
   socket.on('send_message', (data) => {
     console.log('Message received:', data);
-    io.to(data.receiverId).emit('receive_message', data);
+    io.to(data.receiverEmail).emit('receive_message', data);
   });
 
   socket.on('disconnect', () => {
