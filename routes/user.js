@@ -1,21 +1,25 @@
 const express = require('express');
 const User = require('../models/User');
+
 const router = express.Router();
 
 router.post('/update', async (req, res) => {
+  console.log('POST /update called with body:', req.body);
   const { email, deanery, department } = req.body;
+  console.log({ email, deanery, department });
+  console.log('Received update request:', { email, deanery, department });
 
   if (!email || !deanery || !department) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
-
+  
   try {
     const updatedUser = await User.findOneAndUpdate(
       { email },
       { deanery, department },
       { new: true }
     );
-
+    
     if (!updatedUser) {
       console.log('User not found for update:', email);
       return res.status(404).json({ message: 'User not found' });
@@ -28,6 +32,7 @@ router.post('/update', async (req, res) => {
     res.status(500).json({ message: 'Update failed' });
   }
 });
+
 
 // Search users by name (case-insensitive)
 router.get('/search', async (req, res) => {
