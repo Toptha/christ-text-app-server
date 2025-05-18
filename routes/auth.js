@@ -4,12 +4,12 @@ const User = require('../models/User');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 router.post('/signup', async (req, res) => {
-  const {email, regNo, password}= req.body;
+  const {name ,email, regNo, password}= req.body;
   try {
     const existingUser= await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already exists' });
     const hashedPassword= await bcrypt.hash(password, 10);
-    const newUser= new User({ email, regNo, password: hashedPassword });
+    const newUser= new User({ name, email, regNo, password: hashedPassword });
     await newUser.save();
     res.status(201).json({ message: 'Signup successful' });
   } catch (err) {
