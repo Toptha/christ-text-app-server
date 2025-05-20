@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-
 router.get('/', async (req, res) => {
-  const searchQuery = req.query.search;
+  const searchQuery = req.query.search?.trim(); // Trim input
   const currentUserEmail = req.query.currentUser;
 
   try {
+    // Return empty array if search is missing or blank
     if (!searchQuery) {
       return res.json({ users: [] });
     }
@@ -30,4 +30,4 @@ router.get('/', async (req, res) => {
   }
 });
 
- module.exports = router;
+module.exports = router;
