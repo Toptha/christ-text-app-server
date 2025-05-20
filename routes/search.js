@@ -2,26 +2,26 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 router.get('/', async (req, res) => {
-  const searchQuery = req.query.search?.trim(); // Trim input
+  const searchQuery = req.query.search?.trim(); 
   const currentUserEmail = req.query.currentUser;
 
   try {
-    // Return empty array if search is missing or blank
+    let users;
     if (!searchQuery) {
-      return res.json({ users: [] });
+      users = await User.find({ email: { $ne: currentUserEmail } }).select('name email');
+    } else {
+      users = await User.find({
+        $and: [
+          { email: { $ne: currentUserEmail } },
+          {
+            $or: [
+              { name: { $regex: searchQuery, $options: 'i' } },
+              { email: { $regex: searchQuery, $options: 'i' } }
+            ]
+          }
+        ]
+      }).select('name email');
     }
-
-    const users = await User.find({
-      $and: [
-        { email: { $ne: currentUserEmail } },
-        {
-          $or: [
-            { name: { $regex: searchQuery, $options: 'i' } },
-            { email: { $regex: searchQuery, $options: 'i' } }
-          ]
-        }
-      ]
-    }).select('name email');
 
     res.json({ users });
   } catch (err) {
