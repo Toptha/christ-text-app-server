@@ -34,20 +34,18 @@ router.post('/update', async (req, res) => {
 });
 
 
-// Search users by name (case-insensitive)
 router.get('/search', async (req, res) => {
   const query = req.query.q || '';
   try {
     const users = await User.find({
       name: { $regex: query, $options: 'i' },
-    }).limit(20); // limit results to 20 for performance
+    }).limit(50); 
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Optionally get all users (if needed)
 router.get('/', async (req, res) => {
   try {
     const users = await User.find().limit(50);

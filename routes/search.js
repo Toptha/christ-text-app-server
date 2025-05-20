@@ -1,7 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
-
 router.get('/', async (req, res) => {
   const searchQuery = req.query.search;
   const currentUserEmail = req.query.currentUser;
@@ -12,9 +8,16 @@ router.get('/', async (req, res) => {
     }
 
     const users = await User.find({
-      email: { $regex: searchQuery, $options: 'i' },
-      email: { $ne: currentUserEmail }
-    });
+      $and: [
+        { email: { $ne: currentUserEmail } },
+        {
+          $or: [
+            { name: { $regex: searchQuery, $options: 'i' } },
+            { email: { $regex: searchQuery, $options: 'i' } }
+          ]
+        }
+      ]
+    }).select('name email');
 
     res.json({ users });
   } catch (err) {
@@ -23,4 +26,4 @@ router.get('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+ module.exports = router;
